@@ -20,7 +20,9 @@ const RISKMachine = Machine(
       currentPlayer: 0,
       players: [],
       nextId: 1,
-      lands: []
+      lands: [],
+      //Don't really like missions here, but if they are, I can paste the statechart directly into the visualizer
+      missions: []
     },
     states: {
       idle: {
@@ -155,7 +157,33 @@ const RISKMachine = Machine(
         return (context.currentPlayer += 1);
       },
       distributeLands: (context, event) => {
-        console.log("distributeLands... overwrite me");
+        console.log("distributeLands... DONE");
+        let playerCounter = 0;
+        let landsCopy = [...context.lands];
+        let newLands = [];
+        for (let i = landsCopy.length - 1; i >= 0; i--) {
+          const l = landsCopy.splice(
+            Math.floor(Math.random() * landsCopy.length),
+            1
+          )[0];
+
+          l.owner = context.players[playerCounter].id;
+          l.troops = 1;
+          newLands.push(l);
+          playerCounter++;
+          if (playerCounter >= context.players.length) {
+            playerCounter = 0;
+          }
+        }
+        let newPlayers = context.players.map(player => {
+          const territories = context.lands.filter(l => l.owner === player.id);
+          player.troopsToPlace = player.troopsToPlace - territories.length;
+          return player;
+        });
+        return {
+          players: newPlayers,
+          lands: newLands
+        };
       },
       setMissions: (context, event) => {
         console.log("setMissions... overwrite me");

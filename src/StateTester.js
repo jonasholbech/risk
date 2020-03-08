@@ -33,7 +33,7 @@ export default function StateTester() {
           );
         })}
       </ul>
-      <Map lands={current.context.lands} />
+      <Map lands={current.context.lands} players={current.context.players} />
       <h3>Custom actions</h3>
       {current.value === "idle" && <Fetch send={send} />}
       {current.value === "addPlayers" && (

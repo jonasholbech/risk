@@ -9,7 +9,7 @@ export default function Fetch(props) {
         props.send({
           type: "RESOLVE",
           data: data
-        });
+        }); //TODO: catch
       });
   });
   return <p>Loading</p>;
