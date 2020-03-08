@@ -1,5 +1,5 @@
 import React from "react";
-import { useMachine, send } from "@xstate/react";
+import { useMachine } from "@xstate/react";
 import RISKMachine from "./statemachines/Risk";
 import { MachineProvider } from "./statemachines/MachineProvider";
 import Test from "./Test";
