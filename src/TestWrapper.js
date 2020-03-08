@@ -11,6 +11,7 @@ export default function TestWrapper(props) {
     <MachineProvider machineInstance={machineInstance}>
       <div>
         <Test />
+        <Test />
       </div>
     </MachineProvider>
   );

@@ -1,11 +1,11 @@
 import React from "react";
-import TestWrapper from "./TestWrapper";
+import StateTester from "./StateTester";
 import "./App.css";
 
 function App() {
   return (
     <div className="App">
-      <TestWrapper></TestWrapper>
+      <StateTester></StateTester>
     </div>
   );
 }

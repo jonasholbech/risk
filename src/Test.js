@@ -48,6 +48,17 @@ export default function Test(props) {
           );
         })}
       </ul>
+      <input
+        type="text"
+        placeholder="Enter text"
+        value={state.context.inputValue}
+        onChange={e =>
+          send({
+            type: "TYPING",
+            value: e.target.value
+          })
+        }
+      />
     </div>
   );
 }

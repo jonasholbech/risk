@@ -17,20 +17,23 @@ const RISKMachine = Machine(
     initial: "idle",
     context: {
       retries: 0,
-      numPlayers: 2,
-      currentPlayer: 0
+      currentPlayer: 0,
+      players: [],
+      nextId: 1,
+      lands: []
     },
     states: {
       idle: {
-        exit: ["idleExit"],
         on: {
           FETCH: "loading"
         }
       },
       loading: {
-        exit: ["loadingExit"],
         on: {
-          RESOLVE: "addPlayers",
+          RESOLVE: {
+            target: "addPlayers",
+            actions: "saveLands"
+          },
           REJECT: "failure"
         }
       },
@@ -47,19 +50,11 @@ const RISKMachine = Machine(
       addPlayers: {
         exit: ["setInitialTroops", "distributeLands"],
         on: {
-          ADD: {
-            target: "addPlayers",
-            internal: true,
-            actions: assign({
-              numPlayers: (context, event) => context.numPlayers + 1
-            })
+          ADD_PLAYER: {
+            actions: "addPlayer"
           },
-          REMOVE: {
-            target: "addPlayers",
-            internal: true,
-            actions: assign({
-              numPlayers: (context, event) => context.numPlayers - 1
-            })
+          REMOVE_PLAYER: {
+            actions: "removePlayer"
           },
           NEXT: "getMissions"
         }
@@ -107,22 +102,57 @@ const RISKMachine = Machine(
             }
           },
           move: {},
-          attack: {}
+          attack: {
+            on: {
+              WIN: "takeOverTerritory",
+              LOOSE: "battleLost"
+            }
+          },
+          takeOverTerritory: {},
+          battleLost: {}
         }
       }
     }
   },
   {
     actions: {
+      addPlayer: assign((ctx, e) => ({
+        players: ctx.players.concat({
+          name: e.payload.name,
+          color: e.payload.color,
+          troopsToPlace: 0,
+          id: ctx.nextId,
+          mission: null
+        }),
+        nextId: ctx.nextId + 1
+      })),
+      removePlayer: assign((ctx, e) => {
+        let filtered = ctx.players.filter(pl => pl.id !== e.payload.id);
+        return {
+          players: filtered
+        };
+      }),
+      setInitialTroops: assign((context, event) => {
+        console.log("setInitialTroops...DONE");
+        let newPlayers = context.players.map(player => {
+          player.troopsToPlace = 20 + (6 - context.players.length) * 5;
+          return player;
+        });
+        return {
+          players: newPlayers
+        };
+      }),
+      saveLands: assign((ctx, e) => {
+        return {
+          lands: e.data
+        };
+      }),
       nextPlayer: (context, event) => {
-        if (context.currentPlayer + 1 === context.numPlayers) {
+        if (context.currentPlayer + 1 === context.players.length) {
           context.currentPlayer = 0;
           return context.currentPlayer;
         }
         return (context.currentPlayer += 1);
-      },
-      setInitialTroops: (context, event) => {
-        console.log("setInitialTroops... overwrite me");
       },
       distributeLands: (context, event) => {
         console.log("distributeLands... overwrite me");
