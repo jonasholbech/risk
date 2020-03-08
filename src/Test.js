@@ -1,12 +1,18 @@
 import React, { useState, useContext } from "react";
 import { MachineContext } from "./statemachines/MachineProvider";
-import RISKMachine from "./statemachines/Risk";
+//import RISKMachine from "./statemachines/Risk";
 //test  om state er det samme i multiple components (det er det ikke, noget med at abbonnere på service)
 export default function Test(props) {
-  const [state, send, machineService] = useContext(MachineContext);
-  console.log(state);
-  console.log(machineService);
+  const [state, send] = useContext(MachineContext);
+  /*console.log(state);
+  state.actions.forEach(action => {
+    if (["idleExit"].includes(action.type)) {
+      console.log("CAUGHT IDLE EXIT");
+      state.context.currentPlayer = 100;
+    }
+  });*/
   const [initalTroops, setInitialTroops] = useState(null);
+
   //const machine = useMachine(RISKMachine);
 
   /*const [, , service] = useService(x, {
@@ -27,12 +33,16 @@ export default function Test(props) {
         State machines: {JSON.stringify(state.value)}, {initalTroops}
       </h1>
       {state.nextEvents.map(next => {
-        return <button onClick={() => send(next)}>{next}</button>;
+        return (
+          <button key={next} onClick={() => send(next)}>
+            {next}
+          </button>
+        );
       })}
       <ul>
         {contexts.map(ctx => {
           return (
-            <li>
+            <li key={ctx.name}>
               {ctx.name}: {ctx.value}
             </li>
           );

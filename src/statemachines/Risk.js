@@ -22,11 +22,13 @@ const RISKMachine = Machine(
     },
     states: {
       idle: {
+        exit: ["idleExit"],
         on: {
           FETCH: "loading"
         }
       },
       loading: {
+        exit: ["loadingExit"],
         on: {
           RESOLVE: "addPlayers",
           REJECT: "failure"
