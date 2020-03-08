@@ -62,7 +62,7 @@ const RISKMachine = Machine(
         }
       },
       getMissions: {
-        entry: ["setMissions"],
+        entry: ["generateMissions", "setMissions"],
         on: {
           ACCEPT: "getMissions",
           NEXT: "placeUnits"
@@ -118,6 +118,24 @@ const RISKMachine = Machine(
   },
   {
     actions: {
+      generateMissions: assign((ctx, e) => {
+        //TODO: "conquor group a & c", "own x territories" etc
+
+        const missions = ctx.players.map(pl => {
+          const mission = {
+            goal: `Defeat ${pl.name}`,
+            conditions: {
+              type: "defeat",
+              id: pl.id,
+              territoryCount: 0
+            }
+          };
+          return mission;
+        });
+        return {
+          missions: missions
+        };
+      }),
       addPlayer: assign((ctx, e) => ({
         players: ctx.players.concat({
           name: e.payload.name,
@@ -185,9 +203,26 @@ const RISKMachine = Machine(
           lands: newLands
         };
       },
-      setMissions: (context, event) => {
-        console.log("setMissions... overwrite me");
-      }
+      setMissions: assign((context, event) => {
+        console.log("setMissions... DONE");
+        let missionsCopy = [...context.missions];
+        const newPlayers = context.players.map(player => {
+          let foundMission = false;
+          while (!foundMission) {
+            const index = Math.floor(Math.random() * missionsCopy.length);
+            //TODO: only looks at defeat missions (only kind)
+            if (player.id !== missionsCopy[index].conditions.id) {
+              player.mission = missionsCopy.splice(index, 1)[0];
+              player.mission.accepted = false;
+              foundMission = true;
+            }
+          }
+          return player;
+        });
+        return {
+          players: newPlayers
+        };
+      })
     }
   }
 );
