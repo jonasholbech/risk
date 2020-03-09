@@ -26,15 +26,19 @@ export default function StateTester() {
         );
       })}
       <h2>Context</h2>
-      <ul>
-        {contexts.map(ctx => {
-          return (
-            <li key={ctx.name}>
-              {ctx.name}: {ctx.name !== "lands" && JSON.stringify(ctx.value)}
-            </li>
-          );
-        })}
-      </ul>
+
+      {contexts.map(ctx => {
+        return (
+          <details
+            key={ctx.name}
+            open={JSON.stringify(ctx.value).length < 200 ? true : false}
+          >
+            <summary>{ctx.name}</summary>
+            <div>{JSON.stringify(ctx.value)}</div>
+          </details>
+        );
+      })}
+
       <hr />
       <h3>Custom actions</h3>
       {current.value === "idle" && <Fetch send={send} />}
@@ -54,7 +58,11 @@ export default function StateTester() {
       )}
 
       <hr />
-      <Map lands={current.context.lands} players={current.context.players} />
+      <Map
+        lands={current.context.lands}
+        labels={current.context.labels}
+        players={current.context.players}
+      />
     </div>
   );
 }

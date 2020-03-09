@@ -21,6 +21,7 @@ const RISKMachine = Machine(
       players: [],
       nextId: 1,
       lands: [],
+      labels: [],
       //Don't really like missions here, but if they are here, I can paste the statechart directly into the visualizer
       //is that really true?
       missions: []
@@ -178,7 +179,8 @@ const RISKMachine = Machine(
       }),
       saveLands: assign((ctx, e) => {
         return {
-          lands: e.data
+          lands: e.lands,
+          labels: e.labels
         };
       }),
       nextPlayer: (context, event) => {
