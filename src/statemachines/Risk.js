@@ -21,7 +21,8 @@ const RISKMachine = Machine(
       players: [],
       nextId: 1,
       lands: [],
-      //Don't really like missions here, but if they are, I can paste the statechart directly into the visualizer
+      //Don't really like missions here, but if they are here, I can paste the statechart directly into the visualizer
+      //is that really true?
       missions: []
     },
     states: {

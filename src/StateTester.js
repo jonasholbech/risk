@@ -4,6 +4,7 @@ import RiskMachine from "./statemachines/Risk";
 import Fetch from "./testcomponents/Fetch";
 import AddPlayer from "./testcomponents/AddPlayer";
 import GetMissions from "./testcomponents/GetMissions";
+import PlaceUnits from "./testcomponents/PlaceUnits";
 import Map from "./testcomponents/Map";
 export default function StateTester() {
   const [current, send] = useMachine(RiskMachine);
@@ -42,6 +43,14 @@ export default function StateTester() {
       )}
       {current.value === "getMissions" && (
         <GetMissions players={current.context.players} send={send} />
+      )}
+      {current.value === "placeUnits" && (
+        <PlaceUnits
+          players={current.context.players}
+          lands={current.context.lands}
+          currentPlayer={current.context.currentPlayer}
+          send={send}
+        />
       )}
 
       <hr />
