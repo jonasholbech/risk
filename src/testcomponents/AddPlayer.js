@@ -4,8 +4,8 @@ import React, { useState } from "react";
 
 export default function AddPlayer(props) {
   //const [current, send] = useMachine(RiskMachine);
-  const [val, setVal] = useState("");
-  const [color, setColor] = useState("#808080");
+  const [val, setVal] = useState("Jonas");
+  const [color, setColor] = useState("#ff69b4");
   return (
     <>
       <hr />
@@ -19,6 +19,8 @@ export default function AddPlayer(props) {
               color: color
             }
           });
+          setVal("Anders");
+          setColor("#add8e6");
         }}
       >
         <input

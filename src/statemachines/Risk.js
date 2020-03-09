@@ -64,7 +64,9 @@ const RISKMachine = Machine(
       getMissions: {
         entry: ["generateMissions", "setMissions"],
         on: {
-          ACCEPT: "getMissions",
+          ACCEPT: {
+            actions: "acceptMission"
+          },
           NEXT: "placeUnits"
         }
       },
@@ -118,6 +120,17 @@ const RISKMachine = Machine(
   },
   {
     actions: {
+      acceptMission: assign((ctx, e) => {
+        let newPlayers = ctx.players.map(player => {
+          if (player.id === e.payload.id) {
+            player.mission.accepted = true;
+          }
+          return player;
+        });
+        return {
+          players: newPlayers
+        };
+      }),
       generateMissions: assign((ctx, e) => {
         //TODO: "conquor group a & c", "own x territories" etc
 

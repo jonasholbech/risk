@@ -1,8 +1,9 @@
 import React from "react";
 import { useMachine, send } from "@xstate/react";
 import RiskMachine from "./statemachines/Risk";
-import AddPlayer from "./testcomponents/AddPlayer";
 import Fetch from "./testcomponents/Fetch";
+import AddPlayer from "./testcomponents/AddPlayer";
+import GetMissions from "./testcomponents/GetMissions";
 import Map from "./testcomponents/Map";
 export default function StateTester() {
   const [current, send] = useMachine(RiskMachine);
@@ -33,12 +34,18 @@ export default function StateTester() {
           );
         })}
       </ul>
-      <Map lands={current.context.lands} players={current.context.players} />
+      <hr />
       <h3>Custom actions</h3>
       {current.value === "idle" && <Fetch send={send} />}
       {current.value === "addPlayers" && (
         <AddPlayer players={current.context.players} send={send} />
       )}
+      {current.value === "getMissions" && (
+        <GetMissions players={current.context.players} send={send} />
+      )}
+
+      <hr />
+      <Map lands={current.context.lands} players={current.context.players} />
     </div>
   );
 }
