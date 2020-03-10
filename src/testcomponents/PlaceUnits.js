@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Map from "./Map";
 export default function PlaceUnits({ players, lands, currentPlayer, send }) {
   const [numberToPlace, setNumberToPlace] = useState(1);
+
   function clickHandler(e) {
     //console.dir(e.target, e.currentTarget);
     let id = null;
@@ -26,17 +27,27 @@ export default function PlaceUnits({ players, lands, currentPlayer, send }) {
         type: "PLACE",
         payload: {
           where: id,
-          number: numberToPlace
+          number:
+            numberToPlace > players[currentPlayer].troopsToPlace
+              ? players[currentPlayer].troopsToPlace
+              : numberToPlace
         }
       });
     }
   }
+
   return (
     <>
       <h3>Place Units</h3>
+      {
+        //TODO: show current player
+      }
+
       <input
         type="number"
         value={numberToPlace}
+        min="1"
+        max={players[currentPlayer].troopsToPlace}
         onChange={e => setNumberToPlace(e.target.value)}
       />
       <hr />

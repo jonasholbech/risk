@@ -1,4 +1,11 @@
 import { Machine, assign } from "xstate";
+
+const allUnitsPlaced = ctx => ctx.players.every(pl => pl.troopsToPlace <= 0);
+const currentPlayerHasUnits = ctx =>
+  ctx.players[ctx.currentPlayer].troopsToPlace > 0;
+const currentPlayerDoesNotHaveUnits = ctx =>
+  ctx.players[ctx.currentPlayer].troopsToPlace < 1;
+
 //https://xstate.js.org/viz/?gist=59bb05125d71ef524112cfb7870f4724
 // Available variables:
 // - Machine
@@ -68,21 +75,36 @@ const RISKMachine = Machine(
           ACCEPT: {
             actions: "acceptMission"
           },
-          NEXT: "placeUnits"
+          NEXT: "beforePlaceUnits"
+        }
+      },
+      beforePlaceUnits: {
+        on: {
+          "": [
+            //kinda like "entry", run initially, makes a transition
+            { target: "playerStartTurn", cond: allUnitsPlaced },
+            { target: "placeUnits", cond: currentPlayerHasUnits },
+            { target: "nextPlayer", cond: currentPlayerDoesNotHaveUnits }
+          ]
+        }
+      },
+      nextPlayer: {
+        entry: ["setNextPlayer"],
+        on: {
+          "": { target: "beforePlaceUnits" }
         }
       },
       placeUnits: {
-        exit: ["nextPlayer"],
         on: {
           PLACE: {
-            target: "placeUnits",
+            target: "beforePlaceUnits",
             actions: "placeUnits"
           },
           NEXT: "playerStartTurn"
         }
       },
       playerStartTurn: {
-        entry: ["assignTurnUnits"],
+        entry: ["resetCurrentPlayer", "assignTurnUnits"],
         on: {
           PLACE: "playerStartTurn",
           NEXT: "playerTurn"
@@ -208,13 +230,20 @@ const RISKMachine = Machine(
           lands: e.lands
         };
       }),
-      nextPlayer: (context, event) => {
+      setNextPlayer: assign((context, event) => {
+        console.log("in set next player");
+        let newPlayer = null;
         if (context.currentPlayer + 1 === context.players.length) {
-          context.currentPlayer = 0;
-          return context.currentPlayer;
+          newPlayer = 0;
+          console.log("next: 0");
+        } else {
+          console.log("next: 1");
+          newPlayer = context.currentPlayer + 1;
         }
-        return (context.currentPlayer += 1);
-      },
+        return {
+          currentPlayer: newPlayer
+        };
+      }),
       distributeLands: (context, event) => {
         console.log("distributeLands... DONE");
         let playerCounter = 0;
