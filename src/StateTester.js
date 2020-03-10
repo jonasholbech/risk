@@ -31,10 +31,10 @@ export default function StateTester() {
         return (
           <details
             key={ctx.name}
-            open={JSON.stringify(ctx.value).length < 200 ? true : false}
+            open={JSON.stringify(ctx.value).length < 100 ? true : false}
           >
             <summary>{ctx.name}</summary>
-            <div>{JSON.stringify(ctx.value)}</div>
+            <pre>{JSON.stringify(ctx.value, undefined, 4)}</pre>
           </details>
         );
       })}
