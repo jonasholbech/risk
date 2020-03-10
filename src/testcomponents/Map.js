@@ -15,14 +15,17 @@ export default function Map(props) {
       id="map"
       onClick={props.clickHandler ? props.clickHandler : null}
     >
-      {props.lands.map(land => (
-        <path key={land.id} {...land} fill={colors[land.owner]} />
-      ))}
-      {props.labels.map(label => (
-        <text key={label.title} {...label}>
-          {label.title}
-        </text>
-      ))}
+      {props.lands.map(land => {
+        //TODO: spread all except one (label)
+        return (
+          <g key={land.id}>
+            <path {...land} fill={colors[land.owner]} />
+            <text {...land.label}>
+              {land.label.title}:{land.troops || ""}
+            </text>
+          </g>
+        );
+      })}
     </svg>
   );
 }

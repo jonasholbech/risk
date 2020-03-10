@@ -6,11 +6,10 @@ export default function Fetch(props) {
     fetch("data/usdata.json")
       .then(res => res.json())
       .then(data => {
-        const filtered = data.lands.filter(el => !el.ignore);
+        const filtered = data.lands;
         props.send({
           type: "RESOLVE",
-          lands: filtered,
-          labels: data.labels
+          lands: filtered
         }); //TODO: catch
       });
   });

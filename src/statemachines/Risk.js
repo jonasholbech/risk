@@ -21,7 +21,6 @@ const RISKMachine = Machine(
       players: [],
       nextId: 1,
       lands: [],
-      labels: [],
       //Don't really like missions here, but if they are here, I can paste the statechart directly into the visualizer
       //is that really true?
       missions: []
@@ -137,12 +136,14 @@ const RISKMachine = Machine(
         };
       }),
       placeUnits: assign((ctx, e) => {
-        const where = e.payload.id;
-        const number = e.payload.number || 1;
+        const where = e.payload.where;
+        const number = Number(e.payload.number) || 1;
 
         let newLands = ctx.lands.map(land => {
           if (land.id === where) {
+            console.log(land.troops);
             land.troops = land.troops + number;
+            console.log(land.troops);
           }
           return land;
         });
@@ -204,8 +205,7 @@ const RISKMachine = Machine(
       }),
       saveLands: assign((ctx, e) => {
         return {
-          lands: e.lands,
-          labels: e.labels
+          lands: e.lands
         };
       }),
       nextPlayer: (context, event) => {

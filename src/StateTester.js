@@ -54,16 +54,11 @@ export default function StateTester() {
           lands={current.context.lands}
           currentPlayer={current.context.currentPlayer}
           send={send}
-          labels={current.context.labels}
         />
       )}
 
       <hr />
-      <Map
-        lands={current.context.lands}
-        labels={current.context.labels}
-        players={current.context.players}
-      />
+      <Map lands={current.context.lands} players={current.context.players} />
     </div>
   );
 }
