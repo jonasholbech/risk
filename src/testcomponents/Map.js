@@ -13,6 +13,7 @@ export default function Map(props) {
       viewBox="0 0 1000 589"
       width="1000px"
       id="map"
+      onClick={props.clickHandler ? props.clickHandler : null}
     >
       {props.lands.map(land => (
         <path key={land.id} {...land} fill={colors[land.owner]} />

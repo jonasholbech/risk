@@ -75,7 +75,10 @@ const RISKMachine = Machine(
       placeUnits: {
         exit: ["nextPlayer"],
         on: {
-          PLACE: "placeUnits",
+          PLACE: {
+            target: "placeUnits",
+            actions: "placeUnits"
+          },
           NEXT: "playerStartTurn"
         }
       },
@@ -130,6 +133,28 @@ const RISKMachine = Machine(
           return player;
         });
         return {
+          players: newPlayers
+        };
+      }),
+      placeUnits: assign((ctx, e) => {
+        const where = e.payload.id;
+        const number = e.payload.number || 1;
+
+        let newLands = ctx.lands.map(land => {
+          if (land.id === where) {
+            land.troops = land.troops + number;
+          }
+          return land;
+        });
+        //TODO: gør meget for at undgå player.troopsToPlace-- men må jeg det?
+        const newPlayers = ctx.players.map((player, index) => {
+          if (index === ctx.currentPlayer) {
+            player.troopsToPlace = player.troopsToPlace - number;
+          }
+          return player;
+        });
+        return {
+          lands: newLands,
           players: newPlayers
         };
       }),
